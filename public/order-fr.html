@@ -44,6 +44,25 @@
     linear-gradient(135deg,#888 50%,transparent 50%);
     background-position:calc(100% - 16px) 55%,calc(100% - 21px) 55%;
     background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+  .bank-question{font-size:18px;font-weight:800;color:var(--ink);margin-bottom:14px;text-align:center}
+  .choice-cards{display:flex;gap:12px;margin-bottom:8px}
+  .choice-card{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:8px;padding:18px 12px;border:2px solid var(--line);border-radius:16px;
+    background:#fff;cursor:pointer;transition:.2s;user-select:none;
+  }
+  .choice-card:hover{border-color:#ccc;background:#fafafa}
+  .choice-card.selected{border-color:#c62828;background:#fef2f2;box-shadow:0 2px 12px rgba(198,40,40,.12)}
+  .choice-card .choice-icon{
+    width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:24px;
+  }
+  .choice-card.yes-card .choice-icon{background:#e8f5e9;color:#2e7d32}
+  .choice-card.no-card .choice-icon{background:#fce4ec;color:#c62828}
+  .choice-card .choice-label{font-size:16px;font-weight:700;color:var(--ink)}
+  .choice-card.selected .choice-label{color:#c62828}
+  .choice-card input{display:none}
+
   .submit{width:100%;border:none;background:linear-gradient(135deg, #c62828, #e53935);color:#fff;padding:16px;
     border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;
     box-shadow:0 4px 15px rgba(198,40,40,.3)}
@@ -106,13 +125,17 @@
 
 
     <div class="field">
-      <label>Êtes-vous client de Société Générale Algérie ?</label>
-      <div style="display:flex;gap:12px;margin-top:8px">
-        <label style="display:flex;align-items:center;gap:6px;font-size:15px;font-weight:500;cursor:pointer">
-          <input type="radio" name="is_bank_client" value="yes" style="width:20px;height:20px;accent-color:#c62828" required> Oui
+      <div class="bank-question">Êtes-vous client de Société Générale Algérie ?</div>
+      <div class="choice-cards">
+        <label class="choice-card yes-card" id="yesCard" onclick="selectChoice('yes')">
+          <input type="radio" name="is_bank_client" value="yes" required>
+          <div class="choice-icon">✓</div>
+          <div class="choice-label">Oui</div>
         </label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:15px;font-weight:500;cursor:pointer">
-          <input type="radio" name="is_bank_client" value="no" style="width:20px;height:20px;accent-color:#c62828"> Non
+        <label class="choice-card no-card" id="noCard" onclick="selectChoice('no')">
+          <input type="radio" name="is_bank_client" value="no">
+          <div class="choice-icon">✗</div>
+          <div class="choice-label">Non</div>
         </label>
       </div>
     </div>
@@ -196,6 +219,12 @@
     document.getElementById("sumImg").src = watches[pick].img;
     document.getElementById("sumName").textContent = watches[pick].name;
     document.getElementById("summary").classList.add("show");
+  }
+
+  function selectChoice(val) {
+    document.getElementById('yesCard').classList.toggle('selected', val === 'yes');
+    document.getElementById('noCard').classList.toggle('selected', val === 'no');
+    document.querySelector('input[name="is_bank_client"][value="'+val+'"]').checked = true;
   }
 
   document.getElementById("account").addEventListener("input", function() {

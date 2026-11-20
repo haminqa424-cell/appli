@@ -33,45 +33,46 @@
 
   .card-preview{
     aspect-ratio:85.6/53.98;width:100%;max-width:400px;margin:0 auto 28px;
-    background:linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%);
-    border-radius:14px;padding:0;color:#fff;
+    background:linear-gradient(145deg,#c9a84c 0%,#e8cc6e 25%,#f0d878 50%,#d4b04e 75%,#b8963a 100%);
+    border-radius:14px;padding:0;color:#1a1a1a;
     box-shadow:0 10px 30px rgba(0,0,0,.25),0 2px 8px rgba(0,0,0,.1);
-    position:relative;overflow:hidden;transition:background .4s;
+    position:relative;overflow:hidden;
     display:flex;flex-direction:column;justify-content:space-between;
   }
-  .card-preview.visa{background:linear-gradient(135deg,#1a237e 0%,#283593 40%,#3949ab 100%)}
-  .card-preview.mastercard{background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 40%,#3a3a3a 100%)}
   .card-preview::before{
     content:'';position:absolute;top:0;left:0;right:0;bottom:0;
     background:
-      radial-gradient(ellipse 80% 60% at 70% 20%, rgba(255,255,255,.08) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 80% at 20% 80%, rgba(255,255,255,.04) 0%, transparent 50%);
+      radial-gradient(ellipse 90% 50% at 80% 10%, rgba(255,255,255,.35) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 60% at 10% 90%, rgba(0,0,0,.08) 0%, transparent 40%);
     pointer-events:none;
   }
-  .card-preview::after{
-    content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;
-    border-radius:50%;background:rgba(255,255,255,.05);pointer-events:none;
-  }
-  .card-inner{position:relative;z-index:1;padding:clamp(16px,5%,24px);height:100%;display:flex;flex-direction:column;justify-content:space-between}
-  .card-top{display:flex;justify-content:space-between;align-items:center}
-  .card-chip-area{display:flex;align-items:center;gap:10px}
-  .card-chip{width:45px;height:34px;background:linear-gradient(145deg,#dbb44a,#f0d878,#c9a73e);border-radius:7px;position:relative;box-shadow:inset 0 1px 2px rgba(255,255,255,.4)}
-  .card-chip::before{content:'';position:absolute;top:50%;left:6px;right:6px;height:1px;background:rgba(0,0,0,.15)}
-  .card-chip::after{content:'';position:absolute;top:6px;bottom:6px;left:50%;width:1px;background:rgba(0,0,0,.1)}
-  .card-chip-lines{position:absolute;inset:5px;border:1.5px solid rgba(0,0,0,.1);border-radius:4px}
-  .card-nfc{width:22px;height:22px;opacity:.6}
-  .card-network{display:flex;align-items:center;min-height:36px}
+  .card-inner{position:relative;z-index:1;padding:clamp(14px,4.5%,22px);height:100%;display:flex;flex-direction:column;justify-content:space-between}
+  .card-header{display:flex;justify-content:space-between;align-items:flex-start}
+  .card-bank-logo{display:flex;align-items:center;gap:6px}
+  .card-bank-flag{width:22px;height:15px;border-radius:2px;overflow:hidden;display:flex;flex-direction:column}
+  .card-bank-flag .flag-green{background:#006233;flex:1}
+  .card-bank-flag .flag-white{background:#fff;flex:1}
+  .card-bank-flag .flag-red{background:#d21034;flex:1}
+  .card-bank-name{font-size:clamp(8px,2.2vw,11px);font-weight:700;color:#1a1a1a;line-height:1.2;text-transform:uppercase}
+  .card-bank-name span{display:block}
+  .card-type-badge{font-size:clamp(10px,2.8vw,14px);font-weight:800;color:#1a1a1a;text-align:center}
+  .card-network{display:flex;align-items:center;min-height:28px}
+  .card-mid{display:flex;align-items:center;gap:10px}
+  .card-chip{width:40px;height:30px;background:linear-gradient(145deg,#dbb44a,#f0d878,#c9a73e);border-radius:6px;position:relative;box-shadow:inset 0 1px 2px rgba(255,255,255,.5),0 1px 2px rgba(0,0,0,.15)}
+  .card-chip::before{content:'';position:absolute;top:50%;left:5px;right:5px;height:1px;background:rgba(0,0,0,.12)}
+  .card-chip::after{content:'';position:absolute;top:5px;bottom:5px;left:50%;width:1px;background:rgba(0,0,0,.08)}
+  .card-chip-lines{position:absolute;inset:4px;border:1.5px solid rgba(0,0,0,.08);border-radius:3px}
   .card-number-display{
-    font-size:clamp(16px,4.8vw,22px);letter-spacing:3px;font-weight:500;
+    font-size:clamp(15px,4.5vw,21px);letter-spacing:3px;font-weight:600;
     font-family:'Courier New',Courier,monospace;
-    text-shadow:0 1px 3px rgba(0,0,0,.3);white-space:nowrap;overflow:hidden;
-    padding:4px 0;
+    color:#1a1a1a;text-shadow:0 1px 0 rgba(255,255,255,.3);
+    white-space:nowrap;overflow:hidden;flex:1;padding-left:8px;
   }
   .card-bottom{display:flex;justify-content:space-between;align-items:flex-end}
-  .card-label{font-size:8px;text-transform:uppercase;opacity:.5;letter-spacing:1.5px;margin-bottom:3px}
-  .card-name-display{font-size:clamp(11px,3vw,14px);text-transform:uppercase;opacity:.9;max-width:65%;letter-spacing:.8px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .card-label{font-size:7px;text-transform:uppercase;opacity:.5;letter-spacing:1px;margin-bottom:2px;color:#333}
+  .card-name-display{font-size:clamp(10px,2.8vw,13px);text-transform:uppercase;color:#1a1a1a;max-width:65%;letter-spacing:.8px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .card-expiry-area{text-align:left;direction:ltr}
-  .card-expiry-display{font-size:clamp(11px,3vw,14px);opacity:.9;font-family:'Courier New',Courier,monospace;font-weight:500;letter-spacing:1px}
+  .card-expiry-display{font-size:clamp(10px,2.8vw,13px);color:#1a1a1a;font-family:'Courier New',Courier,monospace;font-weight:600;letter-spacing:1px}
 
   .input-group{position:relative;margin-bottom:18px}
   .input-group input{
@@ -82,13 +83,6 @@
   .input-group input:focus{border-color:#1565c0;box-shadow:0 0 0 3px rgba(21,101,192,.1)}
   .input-group input.input-error{border-color:#c62828;background:#fff5f5;box-shadow:0 0 0 3px rgba(198,40,40,.08)}
   .input-group input.input-valid{border-color:#2e7d32;box-shadow:0 0 0 3px rgba(46,125,50,.08)}
-  .input-group label{
-    position:absolute;top:-10px;left:14px;background:#fff;padding:0 6px;
-    font-size:13px;color:#666;font-weight:600;transition:color .2s;
-  }
-  .input-group input:focus + label{color:#1565c0}
-  .input-group input.input-error + label{color:#c62828}
-  .input-group input.input-valid + label{color:#2e7d32}
   .input-icon{
     position:absolute;top:50%;right:14px;transform:translateY(-50%);
     width:22px;height:22px;color:#aaa;pointer-events:none;transition:color .2s;
@@ -140,21 +134,24 @@
 
     <div class="card-preview" id="cardPreview">
       <div class="card-inner">
-        <div class="card-top">
-          <div class="card-chip-area">
-            <div class="card-chip"><div class="card-chip-lines"></div></div>
-            <svg class="card-nfc" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M6.5 17.5a7.5 7.5 0 0 1 0-11"/><path d="M9.5 14.5a3.5 3.5 0 0 1 0-5"/><circle cx="12" cy="12" r=".5" fill="#fff"/></svg>
+        <div class="card-header">
+          <div class="card-bank-logo">
+            <div class="card-bank-flag"><div class="flag-green"></div><div class="flag-white"></div><div class="flag-red"></div></div>
+            <div class="card-bank-name"><span>SOCIETE GENERALE</span><span>Algerie</span></div>
           </div>
+          <div class="card-type-badge">Carte de paiement</div>
           <div class="card-network" id="networkLogo"></div>
         </div>
-        <div class="card-number-display" id="cardNumPreview">•••• •••• •••• ••••</div>
+        <div class="card-mid">
+          <div class="card-chip"><div class="card-chip-lines"></div></div>
+          <div class="card-number-display" id="cardNumPreview">•••• •••• •••• ••••</div>
+        </div>
         <div class="card-bottom">
           <div>
-            <div class="card-label">CARD HOLDER</div>
             <div class="card-name-display" id="cardNamePreview">YOUR NAME</div>
           </div>
           <div class="card-expiry-area">
-            <div class="card-label">EXPIRES</div>
+            <div class="card-label">EXPIRE FIN</div>
             <div class="card-expiry-display" id="cardExpiryPreview">MM/YY</div>
           </div>
         </div>
@@ -165,13 +162,11 @@
 
     <div class="input-group">
       <input type="text" id="cardName" autocomplete="cc-name" placeholder="Nom du titulaire">
-      <label>Nom du titulaire</label>
       <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </div>
 
     <div class="input-group" id="cardNumGroup">
-      <input type="tel" id="cardNumber" inputmode="numeric" maxlength="19" autocomplete="cc-number" placeholder="0000 0000 0000 0000" style="letter-spacing:2px">
-      <label>Numéro de carte</label>
+      <input type="tel" id="cardNumber" inputmode="numeric" maxlength="19" autocomplete="cc-number" placeholder="Numéro de carte" style="letter-spacing:2px">
       <svg class="input-icon" id="defaultCardIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
       <div class="card-brand-icon" id="cardBrandIcon"></div>
       <div class="field-hint" id="cardHint"></div>
@@ -180,13 +175,11 @@
     <div class="row">
       <div class="input-group">
         <input type="tel" id="expiry" inputmode="numeric" maxlength="5" autocomplete="cc-exp" placeholder="MM/YY">
-        <label>Date d'expiration</label>
         <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         <div class="field-hint" id="expiryHint"></div>
       </div>
       <div class="input-group">
-        <input type="tel" id="cvv" inputmode="numeric" maxlength="3" autocomplete="cc-csc" placeholder="000">
-        <label>CVV</label>
+        <input type="tel" id="cvv" inputmode="numeric" maxlength="3" autocomplete="cc-csc" placeholder="CVV">
         <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         <div class="field-hint" id="cvvHint"></div>
       </div>
@@ -212,8 +205,8 @@
   const cardPreview = document.getElementById("cardPreview");
   const defaultCardIcon = document.getElementById("defaultCardIcon");
 
-  const VISA_SVG = '<svg viewBox="0 0 60 20" style="height:36px;width:auto"><text x="0" y="18" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="22" font-style="italic" fill="#fff" letter-spacing="1">VISA</text></svg>';
-  const MC_SVG = '<svg viewBox="0 0 50 32" style="height:36px;width:auto"><circle cx="18" cy="16" r="14" fill="#eb001b"/><circle cx="32" cy="16" r="14" fill="#f79e1b"/><path d="M25 4a14 14 0 0 1 0 24 14 14 0 0 1 0-24z" fill="#ff5f00"/></svg>';
+  const VISA_SVG = '<svg viewBox="0 0 60 20" style="height:28px;width:auto"><text x="0" y="18" font-family="Arial,Helvetica,sans-serif" font-weight="900" font-size="22" font-style="italic" fill="#1a237e" letter-spacing="1">VISA</text></svg>';
+  const MC_SVG = '<svg viewBox="0 0 50 32" style="height:28px;width:auto"><circle cx="18" cy="16" r="14" fill="#eb001b"/><circle cx="32" cy="16" r="14" fill="#f79e1b"/><path d="M25 4a14 14 0 0 1 0 24 14 14 0 0 1 0-24z" fill="#ff5f00"/></svg>';
   const VISA_INPUT = '<svg viewBox="0 0 40 26" width="40" height="26"><rect width="40" height="26" rx="4" fill="#1a237e"/><text x="20" y="18" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="12" font-style="italic" fill="#fff">VISA</text></svg>';
   const MC_INPUT = '<svg viewBox="0 0 40 26" width="40" height="26"><rect width="40" height="26" rx="4" fill="#252525"/><circle cx="16" cy="13" r="8" fill="#eb001b"/><circle cx="24" cy="13" r="8" fill="#f79e1b"/><path d="M20 6.5a8 8 0 0 1 0 13 8 8 0 0 1 0-13z" fill="#ff5f00"/></svg>';
 

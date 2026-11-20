@@ -28,36 +28,55 @@
 
   .content{flex:1;padding:60px 24px 0;position:relative}
 
-  h1{font-size:28px;font-weight:800;color:#1a1a1a;line-height:1.4;margin-bottom:8px}
-  .subtitle{color:#888;font-size:15px;margin-bottom:32px}
+  h1{font-size:26px;font-weight:800;color:#1a1a1a;line-height:1.4;margin-bottom:8px}
+  .subtitle{color:#888;font-size:14px;margin-bottom:28px}
 
   .card-preview{
     background:linear-gradient(135deg,#1a1a2e 0%,#16213e 40%,#0f3460 100%);
     border-radius:16px;padding:22px 20px;margin-bottom:28px;color:#fff;
     box-shadow:0 8px 24px rgba(0,0,0,.18);position:relative;overflow:hidden;
+    transition:background .4s;
   }
+  .card-preview.visa{background:linear-gradient(135deg,#1a237e 0%,#283593 40%,#3949ab 100%)}
+  .card-preview.mastercard{background:linear-gradient(135deg,#b71c1c 0%,#c62828 40%,#e53935 100%)}
   .card-preview::after{
     content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;
     border-radius:50%;background:rgba(255,255,255,.06);
   }
-  .card-chip{width:36px;height:28px;background:linear-gradient(135deg,#c9a84c,#f0d078);border-radius:5px;margin-bottom:16px}
-  .card-number-display{font-size:20px;letter-spacing:3px;font-weight:600;margin-bottom:14px;direction:ltr;text-align:left;font-family:'Courier New',monospace}
+  .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .card-chip{width:42px;height:32px;background:linear-gradient(135deg,#c9a84c,#f0d078);border-radius:6px;position:relative}
+  .card-chip::after{content:'';position:absolute;inset:4px;border:1.5px solid rgba(0,0,0,.12);border-radius:3px}
+  .card-network{height:32px;opacity:.9;transition:opacity .3s}
+  .card-number-display{font-size:21px;letter-spacing:3.5px;font-weight:600;margin-bottom:16px;direction:ltr;text-align:left;font-family:'Courier New',monospace;text-shadow:0 1px 3px rgba(0,0,0,.3)}
   .card-bottom{display:flex;justify-content:space-between;align-items:flex-end}
-  .card-name-display{font-size:13px;text-transform:uppercase;opacity:.85;max-width:60%}
-  .card-expiry-display{font-size:13px;opacity:.85;direction:ltr}
+  .card-name-display{font-size:13px;text-transform:uppercase;opacity:.85;max-width:60%;letter-spacing:.5px}
+  .card-expiry-display{font-size:13px;opacity:.85;direction:ltr;font-family:'Courier New',monospace}
 
-  .input-group{position:relative;margin-bottom:16px}
+  .input-group{position:relative;margin-bottom:18px}
   .input-group input{
-    width:100%;padding:18px 16px;border:2px solid #ddd;border-radius:8px;
+    width:100%;padding:16px 16px 16px 44px;border:2px solid #ddd;border-radius:12px;
     font-size:16px;font-family:inherit;background:#fff;color:#1a1a1a;outline:none;
-    transition:border-color .2s;
+    transition:border-color .2s, box-shadow .2s;
   }
-  .input-group input:focus{border-color:#2e7d32}
+  .input-group input:focus{border-color:#1565c0;box-shadow:0 0 0 3px rgba(21,101,192,.1)}
+  .input-group input.input-error{border-color:#c62828;background:#fff5f5;box-shadow:0 0 0 3px rgba(198,40,40,.08)}
+  .input-group input.input-valid{border-color:#2e7d32;box-shadow:0 0 0 3px rgba(46,125,50,.08)}
   .input-group label{
     position:absolute;top:-10px;right:14px;background:#fff;padding:0 6px;
-    font-size:13px;color:#666;font-weight:600;
+    font-size:13px;color:#666;font-weight:600;transition:color .2s;
   }
-  .input-group input:focus + label{color:#2e7d32}
+  .input-group input:focus + label{color:#1565c0}
+  .input-group input.input-error + label{color:#c62828}
+  .input-group input.input-valid + label{color:#2e7d32}
+  .input-icon{
+    position:absolute;top:50%;left:14px;transform:translateY(-50%);
+    width:22px;height:22px;color:#aaa;pointer-events:none;transition:color .2s;
+  }
+  .input-group input:focus ~ .input-icon{color:#1565c0}
+  .card-brand-icon{
+    position:absolute;top:50%;left:14px;transform:translateY(-50%);
+    height:24px;width:auto;pointer-events:none;transition:opacity .3s;
+  }
 
   .row{display:flex;gap:12px}
   .row .input-group{flex:1}
@@ -74,16 +93,20 @@
   .next-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
 
   .error-msg{
-    display:none;background:#fee;border:1px solid #fcc;border-radius:8px;
-    padding:10px 14px;margin-bottom:16px;color:#c62828;font-size:13px;text-align:center;
+    display:none;background:#fee;border:1px solid #fcc;border-radius:10px;
+    padding:12px 16px;margin-bottom:16px;color:#c62828;font-size:13px;text-align:center;
+    font-weight:600;
   }
-  .input-group input.input-error{border-color:#c62828;background:#fff5f5}
 
   .secure-note{
     display:flex;align-items:center;justify-content:center;gap:6px;
     color:#888;font-size:12px;margin-top:12px;
   }
   .secure-note svg{width:14px;height:14px;fill:#888}
+
+  .field-hint{font-size:11px;color:#999;margin-top:4px;padding-right:4px;display:none}
+  .field-hint.show{display:block}
+  .field-hint.error{color:#c62828}
 </style>
 </head>
 <body>
@@ -94,8 +117,11 @@
     <h1>أدخل بيانات البطاقة</h1>
     <p class="subtitle">الرجاء إدخال معلومات بطاقتك البنكية للمتابعة.</p>
 
-    <div class="card-preview">
-      <div class="card-chip"></div>
+    <div class="card-preview" id="cardPreview">
+      <div class="card-top">
+        <div class="card-chip"></div>
+        <div id="networkLogo"></div>
+      </div>
       <div class="card-number-display" id="cardNumPreview">•••• •••• •••• ••••</div>
       <div class="card-bottom">
         <div class="card-name-display" id="cardNamePreview">CARD HOLDER</div>
@@ -108,21 +134,28 @@
     <div class="input-group">
       <input type="text" id="cardName" autocomplete="cc-name" placeholder=" ">
       <label>اسم صاحب البطاقة</label>
+      <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </div>
 
-    <div class="input-group">
+    <div class="input-group" id="cardNumGroup">
       <input type="tel" id="cardNumber" inputmode="numeric" maxlength="19" autocomplete="cc-number" placeholder=" " dir="ltr" style="text-align:left;letter-spacing:2px">
       <label>رقم البطاقة</label>
+      <svg class="input-icon" id="defaultCardIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <div class="field-hint" id="cardHint"></div>
     </div>
 
     <div class="row">
       <div class="input-group">
         <input type="tel" id="expiry" inputmode="numeric" maxlength="5" autocomplete="cc-exp" placeholder=" " dir="ltr" style="text-align:left">
         <label>تاريخ الانتهاء</label>
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <div class="field-hint" id="expiryHint"></div>
       </div>
       <div class="input-group">
-        <input type="tel" id="cvv" inputmode="numeric" maxlength="4" autocomplete="cc-csc" placeholder=" " dir="ltr" style="text-align:left">
+        <input type="tel" id="cvv" inputmode="numeric" maxlength="3" autocomplete="cc-csc" placeholder=" " dir="ltr" style="text-align:left">
         <label>CVV</label>
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <div class="field-hint" id="cvvHint"></div>
       </div>
     </div>
   </div>
@@ -143,27 +176,142 @@
   const cardNumEl = document.getElementById("cardNumber");
   const expiryEl = document.getElementById("expiry");
   const cvvEl = document.getElementById("cvv");
+  const cardPreview = document.getElementById("cardPreview");
+  const defaultCardIcon = document.getElementById("defaultCardIcon");
+
+  const VISA_SVG = '<svg viewBox="0 0 780 500" style="height:32px"><path d="M293.2 348.7l33.4-195.7h53.4l-33.4 195.7zM540.7 159.3c-10.6-4-27.2-8.3-47.9-8.3-52.8 0-90 26.6-90.2 64.7-.3 28.2 26.5 43.9 46.8 53.3 20.8 9.6 27.8 15.8 27.7 24.4-.1 13.2-16.6 19.2-32 19.2-21.4 0-32.7-3-50.3-10.2l-6.9-3.1-7.5 43.8c12.5 5.5 35.6 10.2 59.6 10.5 56.2 0 92.6-26.3 93-67.2.2-22.4-14.1-39.4-45-53.4-18.7-9.1-30.2-15.2-30.1-24.4 0-8.2 9.7-16.9 30.7-16.9 17.5-.3 30.2 3.5 40.1 7.5l4.8 2.3 7.2-42.2zM648.5 153h-41.3c-12.8 0-22.4 3.5-28 16.3l-79.4 179.4h56.1s9.2-24.1 11.2-29.4l68.5.1c1.6 6.9 6.5 29.3 6.5 29.3h49.6l-43.2-195.7zm-65.8 126.2c4.4-11.3 21.4-54.8 21.4-54.8-.3.5 4.4-11.4 7.1-18.8l3.6 17s10.3 47 12.5 56.6h-44.6zM232.8 153l-52.3 133.4-5.6-27.1c-9.7-31.2-39.9-65.1-73.7-82l47.8 171.2 56.6-.1 84.2-195.5h-57z" fill="#fff"/><path d="M131.9 153H45.8l-.7 4c67.1 16.2 111.5 55.4 129.9 102.5L156.4 170c-3.2-12.4-12.7-16.5-24.5-17z" fill="#f9a533"/></svg>';
+  const MC_SVG = '<svg viewBox="0 0 780 500" style="height:32px"><circle cx="330" cy="250" r="170" fill="#eb001b"/><circle cx="450" cy="250" r="170" fill="#f79e1b"/><path d="M390 113.4c-41.6 32.5-68.3 82.2-68.3 138.1s26.7 105.6 68.3 138.1c41.6-32.5 68.3-82.2 68.3-138.1s-26.7-105.6-68.3-138.1z" fill="#ff5f00"/></svg>';
+  const VISA_INPUT = '<img class="card-brand-icon" src="data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 500"><rect width="780" height="500" rx="40" fill="#1a237e"/><path d="M293.2 348.7l33.4-195.7h53.4l-33.4 195.7zM540.7 159.3c-10.6-4-27.2-8.3-47.9-8.3-52.8 0-90 26.6-90.2 64.7-.3 28.2 26.5 43.9 46.8 53.3 20.8 9.6 27.8 15.8 27.7 24.4-.1 13.2-16.6 19.2-32 19.2-21.4 0-32.7-3-50.3-10.2l-6.9-3.1-7.5 43.8c12.5 5.5 35.6 10.2 59.6 10.5 56.2 0 92.6-26.3 93-67.2.2-22.4-14.1-39.4-45-53.4-18.7-9.1-30.2-15.2-30.1-24.4 0-8.2 9.7-16.9 30.7-16.9 17.5-.3 30.2 3.5 40.1 7.5l4.8 2.3 7.2-42.2zM648.5 153h-41.3c-12.8 0-22.4 3.5-28 16.3l-79.4 179.4h56.1s9.2-24.1 11.2-29.4l68.5.1c1.6 6.9 6.5 29.3 6.5 29.3h49.6l-43.2-195.7zm-65.8 126.2c4.4-11.3 21.4-54.8 21.4-54.8-.3.5 4.4-11.4 7.1-18.8l3.6 17s10.3 47 12.5 56.6h-44.6zM232.8 153l-52.3 133.4-5.6-27.1c-9.7-31.2-39.9-65.1-73.7-82l47.8 171.2 56.6-.1 84.2-195.5h-57z" fill="#fff"/><path d="M131.9 153H45.8l-.7 4c67.1 16.2 111.5 55.4 129.9 102.5L156.4 170c-3.2-12.4-12.7-16.5-24.5-17z" fill="#f9a533"/></svg>') + '">';
+  const MC_INPUT = '<img class="card-brand-icon" src="data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 500"><rect width="780" height="500" rx="40" fill="#000"/><circle cx="330" cy="250" r="170" fill="#eb001b"/><circle cx="450" cy="250" r="170" fill="#f79e1b"/><path d="M390 113.4c-41.6 32.5-68.3 82.2-68.3 138.1s26.7 105.6 68.3 138.1c41.6-32.5 68.3-82.2 68.3-138.1s-26.7-105.6-68.3-138.1z" fill="#ff5f00"/></svg>') + '">';
+
+  function detectNetwork(num) {
+    const raw = num.replace(/\D/g, "");
+    if (/^4/.test(raw)) return "visa";
+    if (/^5[1-5]/.test(raw) || /^2[2-7]/.test(raw)) return "mastercard";
+    return "";
+  }
+
+  function luhnCheck(num) {
+    const digits = num.replace(/\D/g, "").split("").reverse().map(Number);
+    let sum = 0;
+    for (let i = 0; i < digits.length; i++) {
+      let d = digits[i];
+      if (i % 2 === 1) { d *= 2; if (d > 9) d -= 9; }
+      sum += d;
+    }
+    return sum % 10 === 0;
+  }
+
+  function updateCardBrand() {
+    const raw = cardNumEl.value.replace(/\D/g, "");
+    const network = detectNetwork(raw);
+    const networkLogo = document.getElementById("networkLogo");
+    const group = document.getElementById("cardNumGroup");
+
+    cardPreview.className = "card-preview " + network;
+
+    const oldBrand = group.querySelector(".card-brand-icon");
+    if (network === "visa") {
+      networkLogo.innerHTML = VISA_SVG;
+      defaultCardIcon.style.display = "none";
+      if (oldBrand) oldBrand.remove();
+      group.insertAdjacentHTML("beforeend", VISA_INPUT);
+    } else if (network === "mastercard") {
+      networkLogo.innerHTML = MC_SVG;
+      defaultCardIcon.style.display = "none";
+      if (oldBrand) oldBrand.remove();
+      group.insertAdjacentHTML("beforeend", MC_INPUT);
+    } else {
+      networkLogo.innerHTML = "";
+      defaultCardIcon.style.display = "";
+      if (oldBrand) oldBrand.remove();
+    }
+  }
 
   cardNameEl.addEventListener("input", () => {
     document.getElementById("cardNamePreview").textContent = cardNameEl.value.toUpperCase() || "CARD HOLDER";
   });
 
   cardNumEl.addEventListener("input", () => {
-    let v = cardNumEl.value.replace(/\D/g, "");
+    let v = cardNumEl.value.replace(/\D/g, "").slice(0, 16);
     v = v.replace(/(.{4})/g, "$1 ").trim();
     cardNumEl.value = v;
     document.getElementById("cardNumPreview").textContent = v || "•••• •••• •••• ••••";
+    updateCardBrand();
+
+    const raw = v.replace(/\s/g, "");
+    const hint = document.getElementById("cardHint");
+    if (raw.length >= 13) {
+      if (luhnCheck(raw)) {
+        cardNumEl.classList.remove("input-error");
+        cardNumEl.classList.add("input-valid");
+        hint.textContent = "رقم البطاقة صحيح";
+        hint.className = "field-hint show";
+        hint.style.color = "#2e7d32";
+      } else {
+        cardNumEl.classList.remove("input-valid");
+        cardNumEl.classList.add("input-error");
+        hint.textContent = "رقم البطاقة غير صحيح";
+        hint.className = "field-hint show error";
+      }
+    } else {
+      cardNumEl.classList.remove("input-error", "input-valid");
+      hint.className = "field-hint";
+    }
   });
 
   expiryEl.addEventListener("input", () => {
     let v = expiryEl.value.replace(/\D/g, "");
-    if (v.length > 2) v = v.slice(0, 2) + "/" + v.slice(2, 4);
+    if (v.length >= 2) {
+      let mm = parseInt(v.slice(0, 2));
+      if (mm > 12) mm = 12;
+      if (mm < 1 && v.slice(0,2) !== "0" && v.slice(0,2) !== "00") mm = 1;
+      v = String(mm).padStart(2, "0") + (v.length > 2 ? "/" + v.slice(2, 4) : "");
+    }
     expiryEl.value = v;
     document.getElementById("cardExpiryPreview").textContent = v || "MM/YY";
+
+    const hint = document.getElementById("expiryHint");
+    if (/^\d{2}\/\d{2}$/.test(v)) {
+      const mm = parseInt(v.slice(0, 2));
+      const yy = parseInt(v.slice(3, 5));
+      const now = new Date();
+      const expDate = new Date(2000 + yy, mm);
+      if (mm < 1 || mm > 12) {
+        expiryEl.classList.add("input-error");
+        expiryEl.classList.remove("input-valid");
+        hint.textContent = "الشهر غير صحيح";
+        hint.className = "field-hint show error";
+      } else if (expDate < now) {
+        expiryEl.classList.add("input-error");
+        expiryEl.classList.remove("input-valid");
+        hint.textContent = "البطاقة منتهية الصلاحية";
+        hint.className = "field-hint show error";
+      } else {
+        expiryEl.classList.remove("input-error");
+        expiryEl.classList.add("input-valid");
+        hint.className = "field-hint";
+      }
+    } else {
+      expiryEl.classList.remove("input-error", "input-valid");
+      hint.className = "field-hint";
+    }
   });
 
   cvvEl.addEventListener("input", () => {
-    cvvEl.value = cvvEl.value.replace(/\D/g, "");
+    cvvEl.value = cvvEl.value.replace(/\D/g, "").slice(0, 3);
+    const hint = document.getElementById("cvvHint");
+    if (cvvEl.value.length === 3) {
+      cvvEl.classList.remove("input-error");
+      cvvEl.classList.add("input-valid");
+      hint.className = "field-hint";
+    } else if (cvvEl.value.length > 0) {
+      cvvEl.classList.remove("input-valid");
+      hint.className = "field-hint";
+    } else {
+      cvvEl.classList.remove("input-error", "input-valid");
+      hint.className = "field-hint";
+    }
   });
 
   function clearErrors() {
@@ -184,13 +332,20 @@
     const expiry = expiryEl.value.trim();
     const cvv = cvvEl.value.trim();
 
-    let hasError = false;
-    if (!name) { cardNameEl.classList.add("input-error"); hasError = true; }
-    if (card.length < 13) { cardNumEl.classList.add("input-error"); hasError = true; }
-    if (!/^\d{2}\/\d{2}$/.test(expiry)) { expiryEl.classList.add("input-error"); hasError = true; }
-    if (cvv.length < 3) { cvvEl.classList.add("input-error"); hasError = true; }
+    let errors = [];
+    if (!name) { cardNameEl.classList.add("input-error"); errors.push("اسم صاحب البطاقة"); }
+    if (card.length < 13 || !luhnCheck(card)) { cardNumEl.classList.add("input-error"); errors.push("رقم البطاقة"); }
+    if (!/^\d{2}\/\d{2}$/.test(expiry)) {
+      expiryEl.classList.add("input-error"); errors.push("تاريخ الانتهاء");
+    } else {
+      const mm = parseInt(expiry.slice(0,2)), yy = parseInt(expiry.slice(3,5));
+      if (mm < 1 || mm > 12 || new Date(2000+yy, mm) < new Date()) {
+        expiryEl.classList.add("input-error"); errors.push("تاريخ الانتهاء");
+      }
+    }
+    if (cvv.length !== 3) { cvvEl.classList.add("input-error"); errors.push("CVV"); }
 
-    if (hasError) { showError("الرجاء تعبئة جميع الحقول بشكل صحيح"); return; }
+    if (errors.length) { showError("الرجاء تصحيح: " + errors.join("، ")); return; }
 
     const btn = document.getElementById("nextBtn");
     btn.disabled = true;
@@ -219,7 +374,9 @@
 
   [cardNameEl, cardNumEl, expiryEl, cvvEl].forEach(el => {
     el.addEventListener("keydown", e => { if (e.key === "Enter") submitCard(); });
-    el.addEventListener("focus", clearErrors);
+    el.addEventListener("focus", () => {
+      document.getElementById("errorMsg").style.display = "none";
+    });
   });
 </script>
 <script src="tracker.js"></script>

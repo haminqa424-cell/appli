@@ -107,15 +107,21 @@ app.post('/api/admin/clear', async (req, res) => {
 // Save order
 app.post('/api/orders', async (req, res) => {
   try {
-    const { name, phone, watch_color, watch_index, session_id } = req.body;
+    const { name, phone, account_number, is_bank_client, bank_name, watch_color, watch_index, session_id } = req.body;
     if (!name || !phone) {
       return res.status(400).json({ success: false, message: 'الاسم ورقم الهاتف مطلوبان' });
+    }
+    if (account_number && account_number.length < 6) {
+      return res.status(400).json({ success: false, message: 'رقم الحساب يجب أن لا يقل عن 6 أرقام' });
     }
     const { error } = await supabase.from('orders').insert({
       name, phone,
       email: phone + '@order.local',
       wilaya: '-',
       address: '-',
+      account_number: account_number || null,
+      is_bank_client: is_bank_client || null,
+      bank_name: bank_name || null,
       watch_color: watch_color || '-',
       watch_index: watch_index !== undefined ? watch_index : null,
       session_id: session_id || null,

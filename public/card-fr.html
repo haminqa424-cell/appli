@@ -49,10 +49,11 @@
   .card-inner{position:relative;z-index:1;padding:clamp(14px,4.5%,22px);height:100%;display:flex;flex-direction:column;justify-content:space-between}
   .card-header{display:flex;justify-content:space-between;align-items:flex-start}
   .card-bank-logo{display:flex;align-items:center;gap:6px}
-  .card-bank-flag{width:22px;height:15px;border-radius:2px;overflow:hidden;display:flex;flex-direction:column}
-  .card-bank-flag .flag-green{background:#006233;flex:1}
-  .card-bank-flag .flag-white{background:#fff;flex:1}
-  .card-bank-flag .flag-red{background:#d21034;flex:1}
+  .card-bank-sg-icon{width:24px;height:24px;border-radius:2px;overflow:hidden;display:flex;flex-direction:column;flex-shrink:0}
+  .card-bank-sg-icon .sg-top{flex:1;display:flex}
+  .card-bank-sg-icon .sg-top-red{width:40%;background:#e60028}
+  .card-bank-sg-icon .sg-top-white{flex:1;background:rgba(255,255,255,.85)}
+  .card-bank-sg-icon .sg-bottom{flex:1;background:#1a1a1a}
   .card-bank-name{font-size:clamp(8px,2.2vw,11px);font-weight:700;color:#1a1a1a;line-height:1.2;text-transform:uppercase}
   .card-bank-name span{display:block}
   .card-type-badge{font-size:clamp(10px,2.8vw,14px);font-weight:800;color:#1a1a1a;text-align:center}
@@ -89,8 +90,9 @@
   }
   .input-group input:focus ~ .input-icon{color:#1565c0}
   .card-brand-icon{
-    position:absolute;top:50%;right:14px;transform:translateY(-50%);
+    position:absolute;top:0;bottom:0;right:14px;margin:auto;
     height:28px;width:40px;pointer-events:none;display:flex;align-items:center;
+    z-index:2;
   }
 
   .row{display:flex;gap:12px}
@@ -136,8 +138,8 @@
       <div class="card-inner">
         <div class="card-header">
           <div class="card-bank-logo">
-            <div class="card-bank-flag"><div class="flag-green"></div><div class="flag-white"></div><div class="flag-red"></div></div>
-            <div class="card-bank-name"><span>SOCIETE GENERALE</span><span>Algerie</span></div>
+            <div class="card-bank-sg-icon"><div class="sg-top"><div class="sg-top-red"></div><div class="sg-top-white"></div></div><div class="sg-bottom"></div></div>
+            <div class="card-bank-name"><span>SOCIETE GENERALE</span><span>ALGERIE</span></div>
           </div>
           <div class="card-type-badge">Carte de paiement</div>
           <div class="card-network" id="networkLogo"></div>

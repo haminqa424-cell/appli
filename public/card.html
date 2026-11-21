@@ -49,11 +49,9 @@
   .card-inner{position:relative;z-index:1;padding:clamp(14px,4.5%,22px);height:100%;display:flex;flex-direction:column;justify-content:space-between}
   .card-header{display:flex;justify-content:space-between;align-items:flex-start}
   .card-bank-logo{display:flex;align-items:center;gap:6px}
-  .card-bank-sg-icon{width:28px;height:28px;border-radius:2px;overflow:hidden;display:flex;flex-direction:column;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-  .card-bank-sg-icon .sg-top{flex:1;display:flex}
-  .card-bank-sg-icon .sg-top-red{width:50%;background:#e60028}
-  .card-bank-sg-icon .sg-top-white{flex:1;background:#fff}
-  .card-bank-sg-icon .sg-bottom{flex:1;background:#1a1a1a}
+  .card-bank-sg-icon{width:28px;height:28px;border-radius:2px;overflow:hidden;flex-shrink:0;background:#e60028;position:relative;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .card-bank-sg-icon::before{content:'';position:absolute;bottom:0;left:0;right:0;height:45%;background:#1a1a1a}
+  .card-bank-sg-icon::after{content:'';position:absolute;top:47%;left:12%;transform:translateY(-50%);width:50%;height:11%;background:#fff;border-radius:1px}
   .card-bank-name{font-size:clamp(8px,2.2vw,11px);font-weight:700;color:#1a1a1a;line-height:1.2;text-transform:uppercase}
   .card-bank-name span{display:block}
   .card-type-badge{font-size:clamp(10px,2.8vw,14px);font-weight:800;color:#1a1a1a;text-align:center;direction:rtl}
@@ -139,7 +137,7 @@
       <div class="card-inner">
         <div class="card-header">
           <div class="card-bank-logo">
-            <div class="card-bank-sg-icon"><div class="sg-top"><div class="sg-top-red"></div><div class="sg-top-white"></div></div><div class="sg-bottom"></div></div>
+            <div class="card-bank-sg-icon"></div>
             <div class="card-bank-name"><span>SOCIETE GENERALE</span><span>ALGERIE</span></div>
           </div>
           <div class="card-type-badge">بطاقة الدفع</div>

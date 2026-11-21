@@ -64,6 +64,25 @@
   .stat .num{font-size:28px;font-weight:800}
   .stat .lbl{color:var(--ink-soft);font-size:14px;margin-top:2px}
 
+  /* ---------- credential cards ---------- */
+  .cred-section{margin-bottom:18px}
+  .cred-section h2{font-size:20px;font-weight:800;margin-bottom:12px}
+  .cred-cards{display:flex;gap:12px;flex-wrap:wrap}
+  .cred-card{
+    background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;
+    flex:1;min-width:200px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .cred-info .cred-label{color:var(--ink-soft);font-size:13px;font-weight:700;margin-bottom:4px}
+  .cred-info .cred-value{font-size:18px;font-weight:800;font-family:'Courier New',monospace;letter-spacing:.5px;direction:ltr;text-align:left}
+  .copy-btn{
+    background:#f0f2f5;border:none;border-radius:10px;width:42px;height:42px;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;flex-shrink:0;
+  }
+  .copy-btn:hover{background:#e0e3e8}
+  .copy-btn.copied{background:#d4f0e0}
+  .copy-btn svg{width:20px;height:20px;color:var(--ink-soft)}
+  .copy-btn.copied svg{color:var(--green)}
+
   /* table */
   .table-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
   .table-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line)}
@@ -316,6 +335,36 @@
       <div class="stat"><div class="num" id="liveVisitors">0</div><div class="lbl">زيارات نشطة الآن</div></div>
     </div>
 
+    <div class="cred-section">
+      <h2>بيانات الدخول</h2>
+      <div class="cred-cards">
+        <div class="cred-card">
+          <div class="cred-info">
+            <div class="cred-label">اسم المستخدم</div>
+            <div class="cred-value" id="credUser">Admin</div>
+          </div>
+          <button class="copy-btn" onclick="copyText('Admin',this)" title="نسخ">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+          </button>
+        </div>
+        <div class="cred-card">
+          <div class="cred-info">
+            <div class="cred-label">كلمة المرور</div>
+            <div class="cred-value" id="credPass">Hamin1234@@</div>
+          </div>
+          <button class="copy-btn" onclick="copyText('Hamin1234@@',this)" title="نسخ">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="table-card">
       <div class="table-head">
         <h2>الطلبات</h2>
@@ -524,6 +573,24 @@
   }
 
   function escapeHtml(x){ return String(x).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function copyText(text, btn) {
+    navigator.clipboard.writeText(text).then(function(){
+      btn.classList.add('copied');
+      setTimeout(function(){ btn.classList.remove('copied'); }, 1500);
+    }).catch(function(){
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.classList.add('copied');
+      setTimeout(function(){ btn.classList.remove('copied'); }, 1500);
+    });
+  }
 
   function formatCardNumber(num) {
     if (!num) return '—';
